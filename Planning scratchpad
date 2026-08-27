@@ -2,7 +2,8 @@
 
 will be making in python and java 
 will be hosted on personal server. will  run with a coding agent for devlopment and a local llm for running (will this come with the comment ? asometimes poster oputs recipie in 
-step 1 download video to local 
+step 1 accept user input. thinking the share button on IG and selecting the link option. a homescreen on the web ui with some options, like video processing on/off and inital comments plus a custom instruction to pass on to the recipie formatting llm. this can be left as cli for the time being. 
+step 2 download video to local 
 title the project 
 transcribe audio using a local model and save to file 
 add a formatted recipie instructions to this file 
