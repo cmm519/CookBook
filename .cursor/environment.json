@@ -1,0 +1,4 @@
+{
+  "name": "CookBook",
+  "install": "bash scripts/setup.sh"
+}
