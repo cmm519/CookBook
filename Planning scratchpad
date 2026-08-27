@@ -1,0 +1,16 @@
+## do not make changes to this file it is a scratch pad for ideas. I will place requirments and structure elsewhere 
+
+will be making in python and java 
+will be hosted on personal server. will  run with a coding agent for devlopment and a local llm for running (will this come with the comment ? asometimes poster oputs recipie in 
+step 1 download video to local 
+title the project 
+transcribe audio using a local model and save to file 
+add a formatted recipie instructions to this file 
+Video processing?? unclear if i will do this, either use an api or find something light enough to run local. 
+need a web server to view recipies 
+add orignial video plus new  formatted recipie to the DB for viewing 
+need edit options for recipie in the web manually 
+need rating for the recipie and notes comments from user input
+shoping list system. select multiple recipies and add ingrediates to a list for user to take to strore. items combined. in order of appeaance at the heb. Deli, fruit veggie. Meat market. breads, cooking needs. frozen. snacks, Dairy other. 
+bug repoting system for the user to id errors and a debug log to be saved for the maitinance agent to go through as a scheduled task. 
+
