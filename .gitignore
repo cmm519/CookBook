@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# Test / tooling caches
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Runtime artifacts
+working/
+recipes.db
+
+# Generated recipe packages (keep the directory, ignore contents)
+recipes/*
+!recipes/.gitkeep
+
+# OS / editor
+.DS_Store
