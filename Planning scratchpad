@@ -18,3 +18,4 @@ bug repoting system for the user to id errors and a debug log to be saved for th
 some requirments 
 8gb gpu for small models. ollama with whisper for transcription. yolo for video?? Qwen 3.5 9B ?? 
 
+Command: ollama pull qwen3.5:9b-q4_K_M
