@@ -1,4 +1,21 @@
-Step 1: Generate the Distillation Dataset (The Teacher)Since you are formatting unlabelled transcriptions, you need a high-quality "teacher" model to generate gold-standard training data.Gather Raw Transcripts: Collect 100 to 500 raw text transcriptions from your recipe videos.Batch Process with a Frontier Model: Pass these transcripts through Claude 3.5 Sonnet or GPT-4o using a strict system prompt.Save as JSONL: Format your data into a standard training structure. Every single line in your .jsonl file must look like this:json{"messages": [{"role": "system", "content": "You are a specialized recipe extractor. Convert raw transcript text into structured Markdown recipes."}, {"role": "user", "content": "RAW_TRANSCRIPT_TEXT_HERE"}, {"role": "assistant", "content": "FORMATTED_MARKDOWN_RECIPE_HERE"}]}
+> **Status: ACTIVE (INC-10b)** — Distillation training lives in [`../cookbook model training/`](../cookbook%20model%20training/). CookBook still defaults to **`qwen2.5:7b-instruct`** until `cookbook-formatter` passes eval gates.
+
+## Overview
+
+Train a **Qwen2.5-3B** student (Unsloth LoRA, 4-bit) to replace the interim 7B Ollama formatter. Input is **full consolidated evidence** (transcript + caption/metadata + optional OCR). Output is **Pydantic-validated Recipe JSON** (not Markdown).
+
+## Step 1: Generate the Distillation Dataset (Teacher)
+
+1. Run CookBook download/transcribe/consolidate for Instagram/TikTok URLs.
+2. Bootstrap to ~200 examples if needed (`bootstrap_corpus.py`).
+3. Label with a flagship teacher (OpenAI/Ollama) or reference labels (`generate_teacher_labels.py`).
+4. Export JSONL with fields: `instruction`, `input` (consolidated JSON), `output` (Recipe JSON).
+
+Example JSONL row:
+
+```json
+{"instruction": "<SYSTEM_PROMPT>", "input": "{...consolidated...}", "output": "{...recipe...}"}
+```
 Use code with caution.Step 2: Set Up the Training Environment (The Student)You cannot easily train a model directly inside Ollama. You need a dedicated fine-tuning framework. The absolute easiest, most memory-efficient tool for consumer GPUs is Unsloth. It makes training 2x faster and uses 60% less VRAM.Install Unsloth and Dependencies: Create a Python environment on Linux (or Windows WSL2) and install the library:bashpip install "unsloth[colab-new] @ git+https://github.com"
 pip install --no-deps trl peft transformers accelerate
 Use code with caution.Select your Base Student Model: Choose Qwen/Qwen2.5-3B-Instruct or Qwen/Qwen2.5-1.5B-Instruct. They are already highly proficient at formatting tasks.Step 3: Run the Fine-Tuning Script (LoRA)Because you have an 8GB GPU, you will train using 4-bit LoRA quantization. This allows you to fine-tune a 3B model using only ~6GB of VRAM.Below is a Python blueprint script to execute your training.pythonimport os

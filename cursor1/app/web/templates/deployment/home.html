@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head><title>Deployment GUI</title></head>
+<body>
+  <h1>Deployment GUI</h1>
+  <ul>
+    <li>Docker: {{ 'OK' if docker_ok else 'MISSING' }}</li>
+    <li>ffmpeg: {{ 'OK' if ffmpeg_ok else 'MISSING' }}</li>
+    <li>Ollama: {{ ollama_status }}</li>
+    <li>Whisper model: {{ whisper_model }}</li>
+    <li>Formatter model: {{ formatter_model }}</li>
+  </ul>
+</body>
+</html>

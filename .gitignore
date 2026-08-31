@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+*.egg
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+env/
+
+# Environment
+.env
+.env.local
+cursor1/.env
+cursor1/.env.local
+
+# Docker
+.docker/
+
+# Local runtime data (models, DB, caches — large, machine-specific)
+cursor1/data/
+!cursor1/data/db/.gitkeep
+!cursor1/data/ollama/.gitkeep
+!cursor1/data/whisper-cache/.gitkeep
+
+# Recipe packages (seed locally via scripts/seed_demo_recipes.py)
+cursor1/recipes/
+!cursor1/recipes/.gitkeep
+
+# Dataset — raw videos and local run state
+cursor1/dataset/raw/
+cursor1/dataset/urls.txt
+cursor1/dataset/manifest.json
+
+# Working scratch space
+cursor1/working/
+!cursor1/working/.gitkeep
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Whisper / HuggingFace caches (if outside data/)
+.cache/

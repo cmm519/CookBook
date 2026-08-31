@@ -1,0 +1,1 @@
+"""CookBook application package."""

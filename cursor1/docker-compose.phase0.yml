@@ -1,0 +1,18 @@
+# Phase 0: download + transcribe only (no Ollama)
+services:
+  cookbook:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      MODE: ${MODE:-test}
+    volumes:
+      - ${HOST_RECIPES_DIR:-./recipes}:/data/recipes
+      - ${HOST_WORKING_DIR:-./working}:/data/working
+      - ${HOST_DATASET_DIR:-./dataset}:/data/dataset
+      - ${HOST_DB_DIR:-./data/db}:/data/db
+      - ${HOST_WHISPER_CACHE_DIR:-./data/whisper-cache}:/root/.cache
+    restart: "no"

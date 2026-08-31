@@ -1,0 +1,79 @@
+{% extends "production/base.html" %}
+
+{% block title %}{{ recipe.title }} — CookBook{% endblock %}
+
+{% block content %}
+<div class="recipe-header">
+  <h1>{{ recipe.title }}</h1>
+  <div class="recipe-meta">
+    {% if recipe.source_creator %}<span>{{ recipe.source_creator }}</span>{% endif %}
+    {% if recipe.servings %}<span>{{ recipe.servings }}</span>{% endif %}
+    {% if recipe.total_time %}<span>{{ recipe.total_time }}</span>{% endif %}
+  </div>
+</div>
+
+{% if has_video %}
+<video class="video-player" controls preload="metadata">
+  <source src="/recipes/{{ slug }}/video" type="video/mp4">
+  Your browser does not support video playback.
+</video>
+{% endif %}
+
+{% if recipe.description %}
+<p>{{ recipe.description }}</p>
+{% endif %}
+
+<section class="recipe-section">
+  <h2>Ingredients</h2>
+  <ul class="ingredient-list">
+    {% for ing in recipe.ingredients %}
+    <li>
+      {% if ing.quantity %}{{ ing.quantity }} {% endif %}{{ ing.item }}{% if ing.preparation %} ({{ ing.preparation }}){% endif %}{% if ing.notes %} — {{ ing.notes }}{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+
+<section class="recipe-section">
+  <h2>Instructions</h2>
+  <ol class="instruction-list">
+    {% for step in recipe.instructions %}
+    <li>
+      {{ step.text }}{% if step.duration %} ({{ step.duration }}){% endif %}{% if step.temperature %} — {{ step.temperature }}{% endif %}
+    </li>
+    {% endfor %}
+  </ol>
+</section>
+
+{% if recipe.notes %}
+<section class="recipe-section">
+  <h2>Notes</h2>
+  <ul class="ingredient-list">
+    {% for note in recipe.notes %}
+    <li>{{ note }}</li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+{% if recipe.tags %}
+<p>
+  {% for tag in recipe.tags %}
+  <span class="tag">{{ tag }}</span>
+  {% endfor %}
+</p>
+{% endif %}
+
+<div class="recipe-actions">
+  <a href="/recipes/{{ slug }}/edit" class="btn btn-secondary">Edit</a>
+  <a href="/recipes" class="btn btn-secondary">Back to browse</a>
+  {% if recipe.source_url %}
+  <a href="{{ recipe.source_url }}" target="_blank" rel="noopener">View original Reel</a>
+  {% endif %}
+  <form class="rating-form" action="/recipes/{{ slug }}/rate" method="post">
+    <label for="score">Rate:</label>
+    <input type="number" id="score" name="score" min="1" max="5" required>
+    <button type="submit" class="btn">Save</button>
+  </form>
+</div>
+{% endblock %}

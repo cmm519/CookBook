@@ -1,0 +1,1 @@
+"""Vision/OCR provider interface."""

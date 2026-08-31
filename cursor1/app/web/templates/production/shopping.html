@@ -1,0 +1,35 @@
+{% extends "production/base.html" %}
+
+{% block title %}Shopping List — CookBook{% endblock %}
+
+{% block content %}
+<div class="card">
+  <h1>Shopping List</h1>
+  <p style="color: var(--text-muted);">Select recipes to merge ingredients (sorted by HEB aisle).</p>
+
+  <form method="post">
+    <div class="recipe-checkboxes">
+      {% for r in recipes %}
+      <label>
+        <input type="checkbox" name="slug_{{ r.slug }}" {% if selected and r.slug in selected %}checked{% endif %}>
+        {{ r.title }}
+      </label>
+      {% endfor %}
+    </div>
+    {% if not recipes %}
+    <p class="empty-state">No recipes yet. <a href="/">Import one first</a>.</p>
+    {% else %}
+    <button type="submit" class="btn" style="margin-top: 1rem;">Build list</button>
+    {% endif %}
+  </form>
+
+  {% if items %}
+  <h2 style="margin-top: 2rem;">Items</h2>
+  <ul class="shopping-list">
+    {% for item in items %}
+    <li><strong>[{{ item.aisle_category }}]</strong> {{ item.quantity or '' }} {{ item.ingredient_name }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+{% endblock %}

@@ -15,7 +15,35 @@ Everything else lives **inside** the container.
 
 ---
 
-## Container Strategy
+## One-Shot Setup (Windows)
+
+**Deployers** (not end users) double-click **`CookBook-Setup.bat`** in this folder (`cursor1/`). No manual `docker compose` required for first run.
+
+**User guide:** [`USER_GUIDE.md`](USER_GUIDE.md) — dependencies, deployer vs end-user tools, DebugLog interpretation.
+
+**Prompts:**
+
+| Prompt | `.env` variable | Default |
+|---|---|---|
+| SQLite database folder | `HOST_DB_DIR` | `%USERPROFILE%\CookBook\db` |
+| Ollama / trained models folder | `HOST_OLLAMA_DIR` | `%USERPROFILE%\CookBook\models` |
+| Dataset (videos, transcripts) | `HOST_DATASET_DIR` | `%USERPROFILE%\CookBook\dataset` |
+| Recipe repository | `HOST_RECIPES_DIR` | `%USERPROFILE%\CookBook\recipes` |
+| GPU choice | `WHISPER_DEVICE` | `cuda` (option 2 → `cpu`) |
+| Formatter model to pull | `FORMATTER_MODEL` | `qwen2.5:7b-instruct` |
+
+**Actions after prompts:**
+
+1. Create host directories
+2. Write `.env` with forward-slash paths (`C:/Users/...`) for Docker Desktop
+3. `docker compose build` (+ `-f docker-compose.gpu.yml` if GPU)
+4. Optionally `docker compose up -d` and `ollama pull`
+
+**Post-setup menu:** `CookBook-CLI.bat` — download, transcribe, tests, stack status.
+
+All compose files bind-mount `HOST_*_DIR` from `.env` instead of opaque named volumes for db and models.
+
+---
 
 **Two-service compose stack:** GPU-enabled `cookbook` app + **Ollama sidecar** for recipe formatting.
 
@@ -35,8 +63,8 @@ Everything else lives **inside** the container.
 │                          │ http://ollama:11434          │
 │  ┌───────────────────────▼───────────────────────────┐  │
 │  │  ollama  (GPU for formatter model)                │  │
-│  │  ─ Distilled recipe formatter (production)        │  │
-│  │  ─ MVP: teacher-sized model until distill ready   │  │
+│  │  ─ Interim formatter: qwen2.5:7b-instruct         │  │
+│  │  ─ Distilled cookbook-formatter: ON HOLD          │  │
 │  │  Volume: ollama-models/                           │  │
 │  └───────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────┘
@@ -72,7 +100,7 @@ Everything else lives **inside** the container.
 | Whisper model weights | Downloaded to host cache | Volume `whisper-cache` on `cookbook` service |
 | Recipe formatter model | API or local | **Ollama sidecar** — `ollama-models` volume; HTTP API from `cookbook` |
 | API keys (formatter MVP fallback) | `.env` on host | `.env` via compose; use only if `FORMATTER_PROVIDER=api` during bootstrap |
-| Unsloth (distillation) | Separate training env | **Separate `Dockerfile.train`** — export GGUF/Modelfile → `ollama create` |
+| Unsloth (distillation) | Separate training env | **ON HOLD** — `Dockerfile.train` / INC-10b deferred; see [`DISTALATION.MD`](DISTALATION.MD) |
 | Ollama runtime | Host install | **`ollama/ollama` compose service** (decision locked) |
 
 ---
@@ -103,7 +131,7 @@ recipe-repo/
 1. System: `ffmpeg`, `curl`, minimal build tools (removed in final stage if multi-stage)
 2. Python: `pip install` from `pyproject.toml` / `requirements.txt`
 3. App: copy `app/` only (not recipes or working data)
-4. Entrypoint: `scripts/docker-entrypoint.sh` — validate ffmpeg/yt-dlp, create volume dirs, then exec command
+4. Entrypoint: `scripts/docker-entrypoint.sh` — validate ffmpeg/yt-dlp, create volume dirs, read `MODE`, dispatch workflow, then exec command
 
 **Non-root user:** Run app as `cookbook` user (uid 1000) for personal server security.
 
@@ -125,6 +153,7 @@ services:
     volumes:
       - ./recipes:/data/recipes
       - ./working:/data/working
+      - ./dataset:/data/dataset
       - cookbook-db:/data/db
       - whisper-cache:/root/.cache
     depends_on:
@@ -155,6 +184,7 @@ volumes:
 |---|---|---|
 | `./recipes` | cookbook | Recipe packages (source of truth) |
 | `./working` | cookbook | Import job scratch space |
+| `./dataset` | cookbook | Phase 0 batch data (`raw/`, `transcripts/`, `manifest.json`) |
 | `cookbook-db` | cookbook | SQLite `recipes.db` |
 | `whisper-cache` | cookbook | faster-whisper model weights |
 | `ollama-models` | ollama | Formatter LLM weights (distilled or bootstrap) |
@@ -196,11 +226,14 @@ docker compose -f docker-compose.yml -f docker-compose.gpu.yml run --rm cookbook
 **Pull formatter model (first-time setup):**
 
 ```bash
-# MVP bootstrap model (replace after distillation)
-docker compose exec ollama ollama pull qwen2.5:3b-instruct
+# Interim formatter (default until distilled model is trained)
+docker compose exec ollama ollama pull qwen2.5:7b-instruct
 
-# After distillation — import custom model
-docker compose exec ollama ollama create cookbook-formatter -f /path/to/Modelfile
+# CPU-only or very tight VRAM fallback
+# docker compose exec ollama ollama pull qwen2.5:3b-instruct
+
+# Future (ON HOLD): custom distilled model
+# docker compose exec ollama ollama create cookbook-formatter -f /path/to/Modelfile
 ```
 
 ---
@@ -221,13 +254,112 @@ docker compose exec ollama ollama create cookbook-formatter -f /path/to/Modelfil
 
 ---
 
+## Modular Startup Modes
+
+The container entrypoint reads **`MODE`** (default `web`) and runs exactly one workflow before exiting (batch modes) or staying up (web).
+
+| `MODE` | Behavior | GPU | Port | Typical use |
+|---|---|---|---|---|
+| `download` | Batch yt-dlp fetch → `dataset/raw/` | No | — | Phase 0 CLI |
+| `transcribe` | Batch Whisper → `dataset/transcripts/` | Yes | — | Phase 0 CLI |
+| `testing-gui` | **Testing GUI** — add URLs, run steps 1–9 individually | Per step | 8081 | Dev/operator workbench |
+| `deployment-gui` | **Deployment GUI** — stack, env, models, health | No | 8082 | Personal server ops |
+| `web` | **Production Web UI** — recipes, import, shopping | Yes | 8080 | End users |
+| `import` | Single full pipeline CLI | Yes | — | Phase 1+ |
+| `test` | Run pytest and exit | No | — | CI |
+
+Set mode via environment: `-e MODE=download` or in `.env`.
+
+### Compose examples
+
+**Phase 0 — batch download (CPU only, no GPU override required):**
+
+```bash
+# Option A: URL list file at ./dataset/urls.txt (one reel URL per line)
+docker compose run --rm \
+  -e MODE=download \
+  -e DOWNLOAD_LIMIT=50 \
+  -v ./dataset:/data/dataset \
+  cookbook
+
+# Option B: Instagram hub/profile URL
+docker compose run --rm \
+  -e MODE=download \
+  -e DOWNLOAD_SOURCE_URL="https://www.instagram.com/<profile>/reels/" \
+  -e DOWNLOAD_LIMIT=50 \
+  -v ./dataset:/data/dataset \
+  cookbook
+```
+
+**Phase 0 — batch transcribe (GPU recommended):**
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.gpu.yml run --rm \
+  -e MODE=transcribe \
+  -e WHISPER_MODEL=large-v3 \
+  -e WHISPER_DEVICE=cuda \
+  -v ./dataset:/data/dataset \
+  -v whisper-cache:/root/.cache \
+  cookbook
+```
+
+**Run tests:**
+
+```bash
+docker compose -f docker-compose.test.yml run --rm \
+  -e MODE=test \
+  cookbook
+```
+
+**Full app (Phase 1+) — web UI:**
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d
+# equivalent: -e MODE=web (default)
+```
+
+### `dataset/` volume layout
+
+Bind-mount `./dataset` → `/data/dataset` inside the container. Phase 0 reads and writes only under this tree.
+
+```text
+dataset/
+├── urls.txt              # optional input for MODE=download (one URL per line)
+├── manifest.json         # batch job ledger: url, reel_id, filenames, status, timestamps
+├── raw/                  # downloaded videos (*.mp4) — MODE=download output
+│   └── {reel_id}.mp4
+└── transcripts/          # MODE=transcribe output
+    ├── {reel_id}.txt     # plain-text transcript
+    └── {reel_id}.json    # timestamped segments
+```
+
+**Add to `docker-compose.yml` volumes (cookbook service):**
+
+```yaml
+volumes:
+  - ./dataset:/data/dataset
+```
+
+Entrypoint creates `raw/` and `transcripts/` on first run if missing. `manifest.json` is created or updated by batch modes.
+
+---
+
 ## Environment Variables (.env.example)
 
 ```bash
+# Startup mode (entrypoint dispatch)
+MODE=web                       # web | download | transcribe | import | test
+
 # Paths (inside container)
 REPOSITORY_PATH=/data/recipes
 WORKING_DIR=/data/working
 DATABASE_PATH=/data/db/recipes.db
+DATASET_PATH=/data/dataset
+
+# Phase 0 batch download
+DOWNLOAD_LIMIT=50              # hard cap 50 URLs per run
+DOWNLOAD_SOURCE_URL=           # optional Instagram hub/profile URL
+# Batch input file: /data/dataset/urls.txt (one URL per line)
 
 # Whisper
 WHISPER_MODEL=large-v3
@@ -236,7 +368,7 @@ WHISPER_DEVICE=cuda          # cuda | cpu (cpu for test compose)
 # Formatter (Ollama sidecar — decision locked)
 FORMATTER_PROVIDER=ollama
 OLLAMA_HOST=http://ollama:11434
-FORMATTER_MODEL=cookbook-formatter    # custom after distillation; bootstrap: qwen2.5:3b-instruct
+FORMATTER_MODEL=qwen2.5:7b-instruct  # interim default; distilled cookbook-formatter ON HOLD
 
 # Formatter fallback (bootstrap only — optional API teacher before distill)
 # FORMATTER_PROVIDER=api
@@ -276,9 +408,11 @@ WEB_PORT=8080
 
 ---
 
-## Distillation Training (Later Phase)
+## Distillation Training (ON HOLD — future development)
 
-**Not in the runtime image.** Separate workflow:
+> **Status:** Deferred. Use `qwen2.5:7b-instruct` via Ollama for recipe formatting until INC-10b is resumed. See [`DISTALATION.MD`](DISTALATION.MD).
+
+**Not in the runtime image.** Separate workflow when resumed:
 
 - `docker/Dockerfile.train` — Unsloth + CUDA devel image, large VRAM or cloud GPU
 - Run manually: `docker build -f docker/Dockerfile.train -t cookbook-train .`
@@ -289,12 +423,15 @@ WEB_PORT=8080
 
 ## Ollama Formatter Lifecycle
 
-| Phase | Model in Ollama | How |
-|---|---|---|
-| MVP bootstrap | `qwen2.5:3b-instruct` (or similar small model) | `ollama pull` — temporary until enough training data |
-| Data collection | Same — teacher-quality output reviewed/corrected in web UI | Transcript → recipe pairs saved for distillation |
-| Distillation | `cookbook-formatter` (custom) | Train via Unsloth → export Modelfile → `ollama create` |
-| Production | `cookbook-formatter` | Default formatter; bootstrap model removed |
+| Phase | Model in Ollama | How | Status |
+|---|---|---|---|
+| **Now (interim)** | **`qwen2.5:7b-instruct`** | `ollama pull` — structured JSON, fits 8GB VRAM after Whisper | **Active** |
+| Tight VRAM / CPU | `qwen2.5:3b-instruct` | Smaller fallback if 7B OOMs | Optional |
+| Data collection | Same interim model; user edits in web UI | Save transcript→recipe pairs for future training | When web UI exists |
+| Distillation | `cookbook-formatter` (custom) | Unsloth → Modelfile → `ollama create` | **ON HOLD (INC-10b)** |
+| Future production | `cookbook-formatter` or keep 7B if good enough | Swap `FORMATTER_MODEL` in `.env` | Deferred |
+
+**Why `qwen2.5:7b-instruct`:** Qwen 2.5 handles instruction-following and JSON reliably; 7B is a clear step up from 3B for messy spoken transcripts. At Q4 quantization (~4.7GB) it loads comfortably on an 8GB GPU once Whisper has finished and unloaded.
 
 **Modelfile example (after distillation):**
 
@@ -310,10 +447,10 @@ SYSTEM You are a specialized recipe extractor. Convert transcript and OCR eviden
 
 | Increment | Docker change |
 |---|---|
-| INC-01 | Add Dockerfile, compose files (+ ollama service), entrypoint, `.env.example` |
+| INC-01 | Add Dockerfile, compose files (+ ollama service), `MODE` entrypoint dispatch, `dataset/` volume, `.env.example` |
 | INC-06 | Verify faster-whisper CUDA inside GPU compose |
 | INC-10 | `FormatterProvider` calls Ollama HTTP API; structured JSON output |
-| INC-10b | Import distilled model into Ollama; swap `FORMATTER_MODEL` |
+| INC-10b | Import distilled model into Ollama; swap `FORMATTER_MODEL` — **ON HOLD** |
 | INC-13 | CLI invoked via `docker compose run` |
 | INC-14 | Web port exposed via compose (ollama stays internal) |
 
@@ -325,4 +462,5 @@ SYSTEM You are a specialized recipe extractor. Convert transcript and OCR eviden
 - [ ] Bind-mount `./recipes` vs named volume only (bind-mount preferred for easy backup)
 - [x] **Ollama:** compose sidecar (`ollama/ollama` image) — **decided**
 - [ ] Java web layer: separate container later, or defer Java entirely
-- [ ] Bootstrap Ollama model: `qwen2.5:3b-instruct` vs another small model until distillation
+- [x] **Interim Ollama formatter:** `qwen2.5:7b-instruct` (fallback: `qwen2.5:3b-instruct`) — **decided**
+- [ ] **Distilled model (INC-10b):** on hold until future development

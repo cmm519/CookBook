@@ -1,0 +1,76 @@
+{
+  "language": "nn",
+  "text": "Hi friends! Today we will prepare a homemade chicken dish with a special recipe with biryani chicken chicken chicken chicken chicken chicken chicken chicken chicken chicken",
+  "segments": [
+    {
+      "start": 0.0,
+      "end": 2.0,
+      "text": "Hi friends!"
+    },
+    {
+      "start": 2.0,
+      "end": 4.0,
+      "text": "Today we will prepare a homemade chicken dish"
+    },
+    {
+      "start": 4.0,
+      "end": 6.0,
+      "text": "with a special recipe"
+    },
+    {
+      "start": 6.0,
+      "end": 8.0,
+      "text": "with biryani"
+    },
+    {
+      "start": 8.0,
+      "end": 10.0,
+      "text": "chicken"
+    },
+    {
+      "start": 10.0,
+      "end": 12.0,
+      "text": "chicken"
+    },
+    {
+      "start": 12.0,
+      "end": 14.0,
+      "text": "chicken"
+    },
+    {
+      "start": 14.0,
+      "end": 16.0,
+      "text": "chicken"
+    },
+    {
+      "start": 16.0,
+      "end": 18.0,
+      "text": "chicken"
+    },
+    {
+      "start": 18.0,
+      "end": 20.0,
+      "text": "chicken"
+    },
+    {
+      "start": 20.0,
+      "end": 22.0,
+      "text": "chicken"
+    },
+    {
+      "start": 22.0,
+      "end": 24.0,
+      "text": "chicken"
+    },
+    {
+      "start": 24.0,
+      "end": 26.0,
+      "text": "chicken"
+    },
+    {
+      "start": 26.0,
+      "end": 28.0,
+      "text": "chicken"
+    }
+  ]
+}

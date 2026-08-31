@@ -1,0 +1,21 @@
+{% extends "production/base.html" %}
+
+{% block title %}Edit {{ recipe.title }} — CookBook{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 560px;">
+  <h1>Edit recipe</h1>
+  <form method="post">
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input type="text" id="title" name="title" value="{{ recipe.title }}">
+    </div>
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea id="description" name="description">{{ recipe.description or '' }}</textarea>
+    </div>
+    <button type="submit" class="btn">Save</button>
+    <a href="/recipes/{{ slug }}" class="btn btn-secondary" style="margin-left: 0.5rem;">Cancel</a>
+  </form>
+</div>
+{% endblock %}

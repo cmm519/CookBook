@@ -1,0 +1,14 @@
+# One Instagram reel or post URL per line (max 50 processed per batch).
+# Instagram hub pages (e.g. /popular/...) usually cannot be scraped without login.
+# Paste reel URLs here, then run:
+#   docker compose -f docker-compose.phase0.yml run --rm -e MODE=download cookbook \
+#     python -m app.cli download --urls-file /data/dataset/urls.txt
+#
+# Example:
+# https://www.instagram.com/reel/ABC123xyz/
+https://www.instagram.com/reel/DaF766uDQ0C/?utm_source=popular_topic_grid
+https://www.instagram.com/reel/DaBU4FutkT0/?utm_source=popular_topic_grid
+https://www.instagram.com/reel/DWGObcgEVM7/?utm_source=popular_topic_grid
+https://www.instagram.com/reel/DNaXvZzBpum/?utm_source=popular_topic_grid
+https://www.instagram.com/reel/DUw9puDERf1/?utm_source=popular_topic_grid
+https://www.instagram.com/reel/DaOEpIAk2Pe/?utm_source=ig_web_copy_link

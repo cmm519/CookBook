@@ -1,0 +1,47 @@
+{% extends "production/base.html" %}
+
+{% block title %}CookBook — Import Recipes{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <h1>Your personal recipe collection</h1>
+  <p>Turn Instagram Reels into searchable, editable recipes — saved locally on your server.</p>
+</section>
+
+<div class="card" style="max-width: 560px; margin: 0 auto;">
+  <h2>Import a Reel</h2>
+  <form action="/import" method="post">
+    <div class="form-group">
+      <label for="source_url">Instagram Reel URL</label>
+      <input type="url" id="source_url" name="source_url" placeholder="https://www.instagram.com/reel/..." required>
+    </div>
+    <div class="form-group">
+      <label for="user_comment">Your notes (optional)</label>
+      <input type="text" id="user_comment" name="user_comment" placeholder="e.g. tried this, loved it">
+    </div>
+    <div class="form-group">
+      <label for="custom_instruction">Custom instruction for formatter (optional)</label>
+      <input type="text" id="custom_instruction" name="custom_instruction" placeholder="e.g. make it vegetarian">
+    </div>
+    <div class="form-group checkbox-group">
+      <input type="checkbox" id="video_processing" name="video_processing" value="true">
+      <label for="video_processing">Enable video processing (OCR for on-screen text)</label>
+    </div>
+    <button type="submit" class="btn">Import Recipe</button>
+  </form>
+</div>
+
+<p style="text-align: center; margin-top: 2rem;">
+  Already have recipes? <a href="/recipes">Browse your collection →</a>
+</p>
+
+<details class="bug-report card" style="max-width: 560px; margin: 2rem auto 0;">
+  <summary>Report a bug</summary>
+  <form action="/bug-report" method="post" style="margin-top: 1rem;">
+    <div class="form-group">
+      <textarea name="description" placeholder="Describe what went wrong..." required></textarea>
+    </div>
+    <button type="submit" class="btn btn-secondary">Submit report</button>
+  </form>
+</details>
+{% endblock %}

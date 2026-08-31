@@ -18,7 +18,7 @@ Recipe reels often contain critical information in on-screen text that is never 
 **Model strategy (two separate concerns):**
 
 - **Transcription:** faster-whisper (local Whisper) — always local, MVP
-- **Recipe formatting:** Ollama sidecar (compose service) — bootstrap small model during MVP → custom `cookbook-formatter` after distillation (LoRA/Unsloth)
+- **Recipe formatting:** Ollama sidecar — **`qwen2.5:7b-instruct`** interim (default). Custom `cookbook-formatter` via distillation is **on hold** (INC-10b).
 
 See [`DISTALATION.MD`](../DISTALATION.MD) for distillation workflow.
 
@@ -34,7 +34,7 @@ Instagram Reel URL + Web Options (toggles, comments, custom instruction)
 [4] Extract video frames               (ffmpeg, optional)
 [5] OCR / vision analysis              (provider interface, optional)
 [6] Source consolidation               (transcript + vision + metadata)
-[7] Recipe formatter                   (Ollama HTTP API — teacher → distilled)
+[7] Recipe formatter                   (Ollama HTTP API — qwen2.5:7b-instruct interim)
 [8] Normalization + Markdown           (deterministic, no LLM)
 [9] Store recipe package + SQLite index
       |
@@ -159,7 +159,7 @@ flowchart TB
 | sqlite3 (stdlib) | Search index | Yes |
 | httpx | Ollama HTTP API client | Yes |
 | ollama/ollama (compose) | Recipe formatter inference | Yes |
-| Unsloth | LoRA distillation training | Later — separate `Dockerfile.train` |
+| Unsloth | LoRA distillation training | **ON HOLD** — INC-10b; see [`DISTALATION.MD`](../DISTALATION.MD) |
 
 ### Persistent volumes
 

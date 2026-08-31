@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}CookBook{% endblock %}</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <a href="/" class="logo">CookBook</a>
+      <nav>
+        <ul class="nav-tabs">
+          <li><a href="/" class="{% if active_tab == 'home' %}active{% endif %}">Home</a></li>
+          <li><a href="/recipes" class="{% if active_tab == 'browse' %}active{% endif %}">Browse Recipes</a></li>
+          <li><a href="/shopping" class="{% if active_tab == 'shopping' %}active{% endif %}">Shopping</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    CookBook — your local recipe collection from Instagram Reels
+  </footer>
+</body>
+</html>

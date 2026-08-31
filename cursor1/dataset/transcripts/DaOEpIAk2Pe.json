@@ -1,0 +1,16 @@
+{
+  "language": "en",
+  "text": "Wow. You guys aren't ready for how good this juicy center looks. Look at that char glistening. The umami depth is...",
+  "segments": [
+    {
+      "start": 0.0,
+      "end": 3.6,
+      "text": "Wow. You guys aren't ready for how good this juicy center looks."
+    },
+    {
+      "start": 4.32,
+      "end": 8.0,
+      "text": "Look at that char glistening. The umami depth is..."
+    }
+  ]
+}

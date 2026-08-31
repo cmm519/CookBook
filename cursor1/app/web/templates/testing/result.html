@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<head><title>Step result</title></head>
+<body>
+  <h1>Step {{ result.step_number }}</h1>
+  <p>Success: {{ result.success }}</p>
+  {% if result.error %}<p style="color:red">{{ result.error }}</p>{% endif %}
+  <pre>{{ result.artifacts }}</pre>
+  <p><a href="/">Back</a></p>
+</body>
+</html>

@@ -1,0 +1,38 @@
+{% extends "production/base.html" %}
+
+{% block title %}Browse Recipes — CookBook{% endblock %}
+
+{% block content %}
+<div class="browse-header">
+  <h1>Browse Recipes</h1>
+  <form class="search-form" action="/recipes" method="get">
+    <input type="search" name="q" placeholder="Search by title or ingredient..." value="{{ query }}">
+    <button type="submit" class="btn">Search</button>
+  </form>
+</div>
+
+{% if recipes %}
+<div class="recipe-grid">
+  {% for r in recipes %}
+  <article class="recipe-card">
+    <a href="/recipes/{{ r.slug }}">
+      <h3>{{ r.title }}</h3>
+      {% if r.source_creator %}
+      <p class="creator">{{ r.source_creator }}</p>
+      {% endif %}
+    </a>
+  </article>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state card">
+  {% if query %}
+  <p>No recipes match "{{ query }}".</p>
+  <a href="/recipes" class="btn btn-secondary">Clear search</a>
+  {% else %}
+  <p>Your recipe collection is empty.</p>
+  <a href="/" class="btn">Import your first Reel</a>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}

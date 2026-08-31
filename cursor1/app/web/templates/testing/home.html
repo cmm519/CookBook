@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head><title>Testing GUI</title></head>
+<body>
+  <h1>Testing GUI — Step runner</h1>
+  <form action="/run-step/1" method="post">
+    <label>URL <input name="source_url" style="width:400px" required></label>
+    <p>Run step:
+    {% for n in range(1, 10) %}
+      <button formaction="/run-step/{{ n }}" type="submit">{{ n }}</button>
+    {% endfor %}
+    </p>
+  </form>
+  <h2>Queued URLs</h2>
+  <ul>{% for u in urls %}<li>{{ u }}</li>{% endfor %}</ul>
+</body>
+</html>
