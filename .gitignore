@@ -31,6 +31,9 @@ cursor1/data/
 !cursor1/data/ollama/.gitkeep
 !cursor1/data/whisper-cache/.gitkeep
 
+# Trained formatter weights (copy locally; register with ollama create)
+cursor1/models/**/*.gguf
+
 # Recipe packages (seed locally via scripts/seed_demo_recipes.py)
 cursor1/recipes/
 !cursor1/recipes/.gitkeep

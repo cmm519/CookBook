@@ -173,6 +173,7 @@ flowchart TB
 
 ## 7. Source Documents
 
+- [`ARCHITECTURE.md`](../ARCHITECTURE.md) — system design vs [pick-a-recipe](https://github.com/pickeld/pick-a-recipe) reference model
 - [`DOCKER.md`](../DOCKER.md) — container deployment, dependency map, compose files
 - [`SOFTWARE_REQUIREMENTS.md`](../SOFTWARE_REQUIREMENTS.md) — authoritative requirements (being filled incrementally)
 - [`RECIPE_REPO_PLAN.md`](../RECIPE_REPO_PLAN.md) — pipeline phases and implementation order
