@@ -17,7 +17,7 @@
 | 8 | Vision/OCR interface | **done** | **CRITICAL** | 7 |
 | 9 | Source consolidation | **done** | | 6, 8 |
 | 10 | Recipe formatter via Ollama API + validation | **done** | **CRITICAL** | 9 |
-| 10b | Distilled `cookbook-formatter` model — LoRA train + `ollama create` | **on hold** | — | 10 + sufficient training data |
+| 10b | Distilled `cookbook-formatter` model — LoRA train + `ollama create` | **done** | — | 10 + sufficient training data |
 | 11 | Normalization + Markdown formatter (deterministic, no LLM) | **done** | | 10 |
 | 12 | SQLite search index | **done** | | 11 |
 | 13 | CLI import workflow | **done** | | 12 |

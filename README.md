@@ -2,6 +2,8 @@
 
 Local-first recipe repository from Instagram Reels.
 
+**Distilled formatter:** place `cookbook-formatter.gguf` in this directory (repo root). Ollama registers it as `cookbook-formatter` on stack start.
+
 **All application code, Docker config, and docs live in [`cursor1/`](cursor1/).**
 
 ## Quick start

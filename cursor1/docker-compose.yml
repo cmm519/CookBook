@@ -26,9 +26,15 @@ services:
 
   ollama:
     image: ollama/ollama:latest
+    entrypoint: ["/bin/sh", "/scripts/ollama-bootstrap.sh"]
     volumes:
       - ${HOST_OLLAMA_DIR:-./data/ollama}:/root/.ollama
+      - ${HOST_FORMATTER_MODEL_DIR:-..}:/models:ro
+      - ./scripts/ollama-bootstrap.sh:/scripts/ollama-bootstrap.sh:ro
     environment:
       OLLAMA_MAX_LOADED_MODELS: "1"
       OLLAMA_NUM_PARALLEL: "1"
+      FORMATTER_MODEL: ${FORMATTER_MODEL:-cookbook-formatter}
+      FORMATTER_GGUF_PATH: ${FORMATTER_GGUF_PATH:-/models/cookbook-formatter.gguf}
+      FORMATTER_MODELFILE: ${FORMATTER_MODELFILE:-/models/Modelfile}
     restart: unless-stopped
