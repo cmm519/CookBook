@@ -46,7 +46,7 @@ class CookBookConfig(BaseSettings):
     whisper_device: str = Field(default="cuda", alias="WHISPER_DEVICE")
     formatter_provider: str = Field(default="ollama", alias="FORMATTER_PROVIDER")
     ollama_host: str = Field(default="http://ollama:11434", alias="OLLAMA_HOST")
-    formatter_model: str = Field(default="qwen2.5:7b-instruct", alias="FORMATTER_MODEL")
+    formatter_model: str = Field(default="cookbook-formatter", alias="FORMATTER_MODEL")
     frame_interval: float = Field(default=2.0, alias="FRAME_INTERVAL")
     keep_working: bool = Field(default=False, alias="KEEP_WORKING")
     video_processing_default: bool = Field(default=True, alias="VIDEO_PROCESSING_DEFAULT")
