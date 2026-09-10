@@ -4,9 +4,17 @@
 
 ### 1. Project Overview
 
-Develop a software system for **[PROJECT PURPOSE / PRIMARY FUNCTION]** using:
+Develop a software system for **[Build a local-first agent that accepts an Instagram Reel share URL and produces a complete, searchable recipe repository entry containing:
 
-- Language: **[PROGRAMMING LANGUAGE]**
+- Original downloaded video
+- Audio/transcript
+- On-screen text/OCR data
+- Structured recipe JSON
+- Clean cookbook-formatted Markdown recipe
+- Metadata
+- Search index entry]** using:
+
+- Language: python and java
 - Architecture: **[ARCHITECTURE / DESIGN PATTERN]**
 - UI framework: **[UI FRAMEWORK]**
 - Testing framework: **[TESTING FRAMEWORK]**
