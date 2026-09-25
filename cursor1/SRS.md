@@ -2,7 +2,9 @@
 
 **Product:** CookBook  
 **Version:** 1.0  
-**Status:** Standalone specification  
+**Status:** Standalone specification
+**Name Corbin Copper**
+**Net ID: CMM519**
 **Date:** 2026-09-25
 
 This document is complete by itself. A reader does not need the user guide, Docker notes, increment plan, or the working requirements draft to understand what the system must do.
