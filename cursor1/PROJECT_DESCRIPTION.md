@@ -1,5 +1,9 @@
 # CookBook — Project Description
 
+**Name Corbin Copper**
+
+**Net ID: CMM519**
+
 CookBook is a local-first recipe repository. A person pastes an Instagram Reel URL. The system downloads the video, transcribes the audio, optionally reads on-screen text, and turns that evidence into a structured recipe that can be searched, edited, rated, and turned into a grocery list.
 
 It runs on a personal server with Docker. Speech-to-text and recipe formatting stay on that machine. Recipe files on disk are the source of truth. A SQLite index supports search.
