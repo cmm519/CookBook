@@ -20,7 +20,9 @@ Then open [http://localhost:8080](http://localhost:8080).
 
 | Start here | Path |
 |---|---|
+| Project description | [`cursor1/PROJECT_DESCRIPTION.md`](cursor1/PROJECT_DESCRIPTION.md) |
+| Standalone SRS | [`cursor1/SRS.md`](cursor1/SRS.md) |
 | User guide | [`cursor1/USER_GUIDE.md`](cursor1/USER_GUIDE.md) |
-| Software requirements | [`cursor1/SOFTWARE_REQUIREMENTS.md`](cursor1/SOFTWARE_REQUIREMENTS.md) |
+| Software requirements (working draft) | [`cursor1/SOFTWARE_REQUIREMENTS.md`](cursor1/SOFTWARE_REQUIREMENTS.md) |
 | Docker | [`cursor1/DOCKER.md`](cursor1/DOCKER.md) |
 | Demo seed | `cd cursor1 && python scripts/seed_demo_recipes.py` |
