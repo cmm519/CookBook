@@ -18,8 +18,10 @@ This folder is the **full CookBook project**: application code, Docker stack, da
 
 | File / Folder | Purpose | Primary audience |
 |---|---|---|
+| [`PROJECT_DESCRIPTION.md`](PROJECT_DESCRIPTION.md) | Short description of the product, users, and pipeline | Anyone new to the repo |
+| [`SRS.md`](SRS.md) | Standalone Software Requirements Specification | Developers, reviewers |
 | [`USER_GUIDE.md`](USER_GUIDE.md) | **Setup, usage, dependencies, DebugLog** — deployer vs end user | Deployer, end user, tester |
-| [`SOFTWARE_REQUIREMENTS.md`](SOFTWARE_REQUIREMENTS.md) | Software Requirements Specification — filled incrementally | Developers |
+| [`SOFTWARE_REQUIREMENTS.md`](SOFTWARE_REQUIREMENTS.md) | Working requirements draft (incremental; links out to other docs) | Developers |
 | [`DOCKER.md`](DOCKER.md) | Container deployment, MODE reference, volumes | Deployer, developers |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | System design (modeled on [pick-a-recipe](https://github.com/pickeld/pick-a-recipe)) | Developers |
 | [`mot/MASTER_CONTEXT.md`](mot/MASTER_CONTEXT.md) | MoT Prompt 0 — persistent context loaded at every dev session |

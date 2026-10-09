@@ -65,8 +65,8 @@ echo   3) Phase 0 only - build image, no background services
 set /p "RUN_CHOICE=Choose [1]: "
 if "!RUN_CHOICE!"=="" set "RUN_CHOICE=1"
 
-set /p "FORMATTER_MODEL=Ollama formatter model to pull [qwen2.5:7b-instruct]: "
-if "!FORMATTER_MODEL!"=="" set "FORMATTER_MODEL=qwen2.5:7b-instruct"
+set /p "FORMATTER_MODEL=Ollama formatter model [cookbook-formatter]: "
+if "!FORMATTER_MODEL!"=="" set "FORMATTER_MODEL=cookbook-formatter"
 
 set /p "WHISPER_MODEL=Whisper model name [large-v3]: "
 if "!WHISPER_MODEL!"=="" set "WHISPER_MODEL=large-v3"
@@ -95,6 +95,7 @@ call :ToDockerPath "!HOST_WHISPER_CACHE_DIR!" HOST_WHISPER_CACHE_DOCKER
     echo HOST_RECIPES_DIR=!HOST_RECIPES_DOCKER!
     echo HOST_WORKING_DIR=!HOST_WORKING_DOCKER!
     echo HOST_WHISPER_CACHE_DIR=!HOST_WHISPER_CACHE_DOCKER!
+    echo HOST_FORMATTER_MODEL_DIR=..
     echo.
     echo WHISPER_MODEL=!WHISPER_MODEL!
     echo WHISPER_DEVICE=!WHISPER_DEVICE!
@@ -102,6 +103,8 @@ call :ToDockerPath "!HOST_WHISPER_CACHE_DIR!" HOST_WHISPER_CACHE_DOCKER
     echo FORMATTER_PROVIDER=ollama
     echo OLLAMA_HOST=http://ollama:11434
     echo FORMATTER_MODEL=!FORMATTER_MODEL!
+    echo FORMATTER_GGUF_PATH=/models/cookbook-formatter.gguf
+    echo FORMATTER_MODELFILE=/models/Modelfile
     echo.
     echo WEB_PORT=8080
     echo TESTING_GUI_PORT=8081
@@ -145,8 +148,15 @@ if defined USE_GPU (
     echo.
     echo Waiting for Ollama to start...
     timeout /t 8 /nobreak >nul
-    echo Pulling formatter model: !FORMATTER_MODEL!
-    docker compose !COMPOSE_FILES! exec -T ollama ollama pull !FORMATTER_MODEL!
+    if exist "..\cookbook-formatter.gguf" (
+        echo Local GGUF found — registering !FORMATTER_MODEL! from repo root...
+        docker compose !COMPOSE_FILES! exec -T ollama ollama create !FORMATTER_MODEL! -f /models/Modelfile
+    ) else if "!FORMATTER_MODEL!"=="cookbook-formatter" (
+        echo [WARN] ..\cookbook-formatter.gguf not found. Place the GGUF at repo root and restart ollama.
+    ) else (
+        echo Pulling formatter model: !FORMATTER_MODEL!
+        docker compose !COMPOSE_FILES! exec -T ollama ollama pull !FORMATTER_MODEL!
+    )
 )
 
 :Done
