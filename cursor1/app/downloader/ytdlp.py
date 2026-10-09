@@ -91,8 +91,6 @@ class YtDlpDownloader(DownloaderProvider):
                 output_template,
                 "--write-info-json",
                 "--write-comments",
-                "--print",
-                "filepath",
                 url,
             ]
         )
